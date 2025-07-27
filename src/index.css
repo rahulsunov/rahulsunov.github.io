@@ -1,0 +1,183 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* TEDx Design System - Premium Dark Theme with Official TEDx Colors */
+
+@layer base {
+  :root {
+    /* TEDx Brand Colors */
+    --tedx-red: 0 100% 50%;
+    --tedx-red-dark: 0 80% 45%;
+    --tedx-black: 0 0% 8%;
+    --tedx-white: 0 0% 98%;
+    --tedx-gray-light: 0 0% 85%;
+    --tedx-gray-medium: 0 0% 60%;
+    --tedx-gray-dark: 0 0% 25%;
+    
+    /* Premium Dark Theme */
+    --background: 0 0% 8%;
+    --background-secondary: 0 0% 12%;
+    --background-tertiary: 0 0% 16%;
+    --foreground: 0 0% 98%;
+    --foreground-secondary: 0 0% 85%;
+    --foreground-muted: 0 0% 60%;
+
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
+    --card-glass: 0 0% 20%;
+
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 100% 50%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 0 100% 65%;
+
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 85%;
+
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 0 80% 45%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 20%;
+    --border-glass: 0 0% 25%;
+    --input: 0 0% 16%;
+    --ring: 0 100% 50%;
+
+    --radius: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+
+    /* Glassmorphism */
+    --glass-bg: hsla(0, 0%, 20%, 0.1);
+    --glass-border: hsla(0, 0%, 100%, 0.1);
+    --glass-blur: blur(20px);
+
+    /* Shadows & Glows */
+    --shadow-premium: 0 25px 50px -12px hsla(0, 0%, 0%, 0.8);
+    --shadow-red-glow: 0 0 50px hsla(0, 100%, 50%, 0.3);
+    --shadow-neumorphic: 
+      20px 20px 60px hsla(0, 0%, 0%, 0.8),
+      -20px -20px 60px hsla(0, 0%, 20%, 0.1);
+
+    /* Animation Easing */
+    --ease-premium: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    overflow-x: hidden;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* TEDx Typography */
+  .font-heading {
+    font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+  
+  .font-body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 400;
+  }
+
+  /* Premium Animations */
+  .animate-slide-up {
+    animation: slideUp 0.8s var(--ease-premium) forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 1s var(--ease-premium) forwards;
+    opacity: 0;
+  }
+  
+  .animate-typewriter {
+    animation: typewriter 3s steps(20) forwards;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 3px solid hsl(var(--primary));
+  }
+
+  /* Glassmorphism */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+  }
+
+  /* Neumorphism Button */
+  .btn-neumorphic {
+    background: hsl(var(--background-secondary));
+    box-shadow: var(--shadow-neumorphic);
+    border: 1px solid hsl(var(--border));
+    transition: all 0.3s var(--ease-premium);
+  }
+  
+  .btn-neumorphic:hover {
+    box-shadow: 
+      var(--shadow-red-glow),
+      var(--shadow-neumorphic);
+    transform: translateY(-2px);
+  }
+
+  /* Premium Card */
+  .card-premium {
+    background: hsl(var(--card-glass) / 0.5);
+    backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border-glass));
+    box-shadow: var(--shadow-premium);
+  }
+
+  /* Scroll Animations */
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s var(--ease-premium);
+  }
+  
+  .scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes typewriter {
+  to {
+    width: 100%;
+  }
+}
