@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDI Attendance & Schedule Portal (Self-Service)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="bg-indigo-600 text-white font-black px-3 py-1 rounded-lg text-xl tracking-wider">MDI</span>
+                <h2 class="text-xl font-bold text-gray-800">Attendance Engine</h2>
+            </div>
+            <div class="flex items-center">
+                <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span> Terminal Mode Active
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+                    <h3 class="text-lg font-bold text-gray-900 border-b pb-2">Schedule Lookup</h3>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Select Search Date</label>
+                        <input type="date" id="attendance-date" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Select Group Section</label>
+                        <select id="section-view-select" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="B">Section B</option>
+                            <option value="A">Section A</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-100">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Timetable Results</label>
+                        <div id="public-timetable-display" class="space-y-2 text-sm max-h-[22vh] overflow-y-auto">
+                            <p class="text-gray-400 italic text-center">Syncing schedule parameters...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="attendance-config-panel" class="bg-slate-900 text-white p-6 rounded-xl border border-slate-800 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                        <h3 id="session-panel-title" class="text-md font-bold text-slate-300">1. Select Target Session</h3>
+                        <button onclick="toggleExtraClassMode()" id="extra-class-btn" class="text-[11px] bg-slate-800 text-indigo-400 font-bold hover:bg-slate-700 px-2 py-1 rounded transition">Add Extra Class</button>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div id="standard-subject-wrapper">
+                            <select id="subject-select" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
+                        </div>
+
+                        <div id="extra-class-form-wrapper" class="hidden space-y-3 border-l-2 border-indigo-500 pl-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Extra Class Date</label>
+                                <input type="date" id="extra-class-date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Subject Code</label>
+                                <input type="text" id="subject-custom-input" placeholder="e.g., BECG, STCM, OM..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">From Time</label>
+                                    <input type="time" id="extra-time-from" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">To Time</label>
+                                    <input type="time" id="extra-time-to" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden p-8 flex flex-col items-center justify-center min-h-[60vh]">
+                    <div class="max-w-md w-full text-center space-y-6">
+                        <div>
+                            <h3 class="text-2xl font-black text-gray-900 tracking-tight">2. Student Self-Verification</h3>
+                            <p class="text-sm text-gray-500 mt-1">Enter your 3-digit roll extension code to verify presence logs.</p>
+                        </div>
+
+                        <div class="flex items-center justify-center space-x-1 bg-gray-100 p-4 rounded-2xl border border-gray-200 max-w-xs mx-auto">
+                            <span class="text-2xl font-black text-gray-400 tracking-tight select-none">25PGHR</span>
+                            <input type="text" id="student-roll-digits" maxlength="3" placeholder="064" class="w-24 bg-transparent text-2xl font-black text-indigo-600 focus:outline-none tracking-widest text-center placeholder-gray-300">
+                        </div>
+
+                        <p id="submission-status-msg" class="text-sm font-semibold hidden"></p>
+
+                        <button onclick="submitSelfAttendance()" id="self-submit-btn" class="w-full max-w-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl shadow-lg tracking-wide transition transform active:scale-[0.98] text-lg">
+                            Mark Me Present
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
