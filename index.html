@@ -51,34 +51,40 @@
                 </div>
 
                 <div id="attendance-config-panel" class="bg-slate-900 text-white p-6 rounded-xl border border-slate-800 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <div class="border-b border-slate-800 pb-2">
                         <h3 id="session-panel-title" class="text-md font-bold text-slate-300">1. Select Target Session</h3>
-                        <button onclick="toggleExtraClassMode()" id="extra-class-btn" class="text-[11px] bg-slate-800 text-indigo-400 font-bold hover:bg-slate-700 px-2 py-1 rounded transition">Add Extra Class</button>
                     </div>
                     
                     <div class="space-y-3">
-                        <div id="standard-subject-wrapper">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Active Class Slot</label>
                             <select id="subject-select" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
                         </div>
 
-                        <div id="extra-class-form-wrapper" class="hidden space-y-3 border-l-2 border-indigo-500 pl-3">
+                        <div id="extra-class-form-wrapper" class="hidden space-y-3 border-l-2 border-indigo-500 id-modifier pl-3 pt-1">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Extra Class Date</label>
-                                <input type="date" id="extra-class-date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Select Extra Subject</label>
+                                <select id="extra-subject-dropdown" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="EL-2">EL-2</option>
+                                    <option value="BECG">BECG</option>
+                                    <option value="SM-2">SM-2</option>
+                                    <option value="OM">OM</option>
+                                    <option value="R&S">R&S</option>
+                                    <option value="STCM">STCM</option>
+                                    <option value="J2S">J2S</option>
+                                    <option value="SCCSR">SCCSR</option>
+                                </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Subject Code</label>
-                                <input type="text" id="subject-custom-input" placeholder="e.g., BECG, STCM, OM..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">From Time</label>
-                                    <input type="time" id="extra-time-from" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">To Time</label>
-                                    <input type="time" id="extra-time-to" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                </div>
+                                <label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Select Extra Slot Time</label>
+                                <select id="extra-time-slot-dropdown" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="08:30 AM - 10:00 AM">08:30 AM - 10:00 AM</option>
+                                    <option value="10:15 AM - 11:45 AM">10:15 AM - 11:45 AM</option>
+                                    <option value="12:00 PM - 01:30 PM">12:00 PM - 01:30 PM</option>
+                                    <option value="02:15 PM - 03:45 PM">02:15 PM - 03:45 PM</option>
+                                    <option value="04:00 PM - 05:30 PM">04:00 PM - 05:30 PM</option>
+                                    <option value="05:45 PM - 07:15 PM">05:45 PM - 07:15 PM</option>
+                                </select>
                             </div>
                         </div>
                     </div>
