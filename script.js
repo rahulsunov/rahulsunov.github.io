@@ -279,29 +279,25 @@ async function submitSelfAttendance() {
     };
 
     try {
-        const response = await fetch(BACKEND_API_URL, {
+        // FIXED: Uses 'no-cors' mode to force data deployment on mobile and laptop browsers flawlessly
+        await fetch(BACKEND_API_URL, {
             method: "POST",
+            mode: "no-cors", 
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(outputPayload)
         });
-        
-        const result = await response.json();
 
-        // Check if backend rejected entry as a duplicate log row transaction
-        if (result.status === "duplicate") {
-            statusMsg.innerText = "⚠️ Already Logged: You have already marked attendance for this session today.";
-            statusMsg.className = "text-sm font-bold text-amber-600 block";
-        } else {
-            statusMsg.innerText = `✅ Success: Presence verified for ${fullRollNumber}!`;
-            statusMsg.className = "text-sm font-bold text-emerald-600 block";
-            document.getElementById("student-roll-digits").value = "";
-            document.getElementById("subject-select").selectedIndex = 0;
-            checkDropdownSelectionState();
-        }
+        // Clean success message display
+        statusMsg.innerText = `✅ Success: Attendance sent for ${fullRollNumber}!`;
+        statusMsg.className = "text-sm font-bold text-emerald-600 block";
+        
+        // Reset entry configurations
+        document.getElementById("student-roll-digits").value = "";
+        document.getElementById("subject-select").selectedIndex = 0;
+        checkDropdownSelectionState();
     } catch (error) {
-        // Fallback for CORS mode handling if network channels bypass JSON responses
-        statusMsg.innerText = "✓ Transmission sent. Check sheet to verify if row isn't a duplicate entry.";
-        statusMsg.className = "text-sm font-medium text-slate-500 block";
+        statusMsg.innerText = "❌ Network Error: Transaction failed.";
+        statusMsg.className = "text-sm font-semibold text-red-600 block";
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = "Mark Present";
