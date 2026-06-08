@@ -1,5 +1,6 @@
 // Configuration Parameters
 const BACKEND_API_URL = "https://script.google.com/macros/s/AKfycbxbbjm71ptrLSTkzGcBDUga4QoQxEqK22klsPyk6mEZ_-_awaxlhRvxF69J6BWSIxOH/exec";
+
 // Term 4 Phase Schedule Database (Section B) - Code Only
 const PRE_MID_SCHEDULE = [
     { section: "B", day: "Monday", timeSlot: "10:15 AM - 11:45 AM", subjectCode: "EL-2" },
@@ -97,19 +98,12 @@ function renderPublicTimetable() {
     const scheduleStatus = getActiveScheduleForDate(selectedDateStr);
 
     if (scheduleStatus.status === "unrecorded") {
-        displayContainer.innerHTML = `
-            <div class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-center font-medium text-sm">
-                ⚠️ Data Not Updated Yet
-            </div>`;
+        displayContainer.innerHTML = `<div class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-center font-medium text-sm">⚠️ Data Not Updated Yet</div>`;
         return;
     }
 
     if (scheduleStatus.status === "exam") {
-        displayContainer.innerHTML = `
-            <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 text-center">
-                <span class="text-sm font-bold block">No Regular Classes</span>
-                <span class="text-xs font-semibold text-blue-600">${scheduleStatus.message}</span>
-            </div>`;
+        displayContainer.innerHTML = `<div class="p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 text-center"><span class="text-sm font-bold block">No Regular Classes</span><span class="text-xs font-semibold text-blue-600">${scheduleStatus.message}</span></div>`;
         return;
     }
 
@@ -119,10 +113,7 @@ function renderPublicTimetable() {
     const targetClasses = scheduleStatus.data.filter(item => item.day.toLowerCase() === selectedDay.toLowerCase());
 
     if (targetClasses.length === 0) {
-        displayContainer.innerHTML = `
-            <div class="p-3 bg-slate-50 border border-gray-200 rounded-lg text-center text-gray-500 text-sm">
-                No classes scheduled on this day (${selectedDay}).
-            </div>`;
+        displayContainer.innerHTML = `<div class="p-3 bg-slate-50 border border-gray-200 rounded-lg text-center text-gray-500 text-sm">No classes scheduled on this day (${selectedDay}).</div>`;
         return;
     }
 
@@ -207,17 +198,69 @@ function formatTimeToAMPM(timeString) {
     return `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
 }
 
-// core implementation logic engine: processing self service submissions validation channels
+// NEW LOGIC ENGINE: Polls the spreadsheet backend to compile student historical summaries
+async function fetchAttendanceHistory() {
+    const rollDigitsInput = document.getElementById("student-roll-digits").value.trim();
+    const reportCard = document.getElementById("history-report-card");
+    const reportList = document.getElementById("history-report-list");
+    const rollLabel = document.getElementById("report-roll-id");
+    
+    reportCard.classList.add("hidden");
+    reportList.innerHTML = "";
+
+    const rollNum = parseInt(rollDigitsInput);
+    if (!rollDigitsInput || isNaN(rollNum) || rollDigitsInput.length !== 3 || rollNum < 64 || rollNum > 126) {
+        alert("Please enter a valid 3-digit roll number (064-126) to scan history data.");
+        return;
+    }
+
+    const fullRoll = `25PGHR${rollDigitsInput}`;
+    rollLabel.innerText = fullRoll;
+    
+    const historyBtn = document.getElementById("history-btn");
+    historyBtn.disabled = true;
+    historyBtn.innerText = "Scanning Sheets...";
+
+    try {
+        const response = await fetch(`${BACKEND_API_URL}?rollNumber=${rollDigitsInput}`);
+        const result = await response.json();
+        
+        const historyData = result.history;
+        const subjectsFound = Object.keys(historyData);
+
+        if (subjectsFound.length === 0) {
+            reportList.innerHTML = `<div class="p-6 text-center text-gray-400 italic">No attendance records discovered on file for this roll identifier.</div>`;
+        } else {
+            subjectsFound.forEach(subjectName => {
+                const row = document.createElement("div");
+                row.className = "px-6 py-3 flex justify-between items-center bg-white hover:bg-slate-50";
+                row.innerHTML = `
+                    <span class="font-bold text-gray-800">${subjectName}</span>
+                    <span class="bg-indigo-50 text-indigo-700 text-xs font-black px-3 py-1 rounded-full border border-indigo-100">
+                        Attended: ${historyData[subjectName].presentCount} Class(es)
+                    </span>
+                `;
+                reportList.appendChild(row);
+            });
+        }
+        reportCard.classList.remove("hidden");
+    } catch (error) {
+        alert("Failed to communicate with spreadsheet log rows.");
+        console.error(error);
+    } finally {
+        historyBtn.disabled = false;
+        historyBtn.innerText = "View My History";
+    }
+}
+
 async function submitSelfAttendance() {
     const rollDigitsInput = document.getElementById("student-roll-digits").value.trim();
     const statusMsg = document.getElementById("submission-status-msg");
-    
     statusMsg.classList.add("hidden");
 
-    // 1. Structural numeric constraints checking validations
     const rollNum = parseInt(rollDigitsInput);
     if (!rollDigitsInput || isNaN(rollNum) || rollDigitsInput.length !== 3 || rollNum < 64 || rollNum > 126) {
-        statusMsg.innerText = "❌ Validation Error: Enter an active three digit identifier extension from 064 to 126.";
+        statusMsg.innerText = "❌ Validation Error: Enter a valid active extension code from 064 to 126.";
         statusMsg.className = "text-sm font-semibold text-red-600 block";
         return;
     }
@@ -225,7 +268,6 @@ async function submitSelfAttendance() {
     const fullRollNumber = `25PGHR${rollDigitsInput}`;
     let dateInput, selectedSubject;
 
-    // 2. Class tracking configuration assembly evaluation blocks
     if (extraClassMode) {
         dateInput = document.getElementById("extra-class-date").value;
         const customSubject = document.getElementById("subject-custom-input").value.trim().toUpperCase();
@@ -249,15 +291,12 @@ async function submitSelfAttendance() {
 
     const submitBtn = document.getElementById("self-submit-btn");
     submitBtn.disabled = true;
-    submitBtn.innerText = "Logging Verification Stream...";
+    submitBtn.innerText = "Logging...";
 
-    // 3. Compile transaction payload packet structure
     const outputPayload = {
         date: dateInput,
         subject: selectedSubject,
-        records: [
-            { email: fullRollNumber, status: "Present" } // Maps roll ID directly into spreadsheet log destination row
-        ]
+        records: [{ email: fullRollNumber, status: "Present" }]
     };
 
     try {
@@ -268,14 +307,14 @@ async function submitSelfAttendance() {
             body: JSON.stringify(outputPayload)
         });
 
-        statusMsg.innerText = `✅ Success: Presence verified cleanly for ${fullRollNumber}!`;
+        statusMsg.innerText = `✅ Success: Presence verified for ${fullRollNumber}!`;
         statusMsg.className = "text-sm font-bold text-emerald-600 block";
-        document.getElementById("student-roll-digits").value = ""; // Clear input field upon successful processing
+        document.getElementById("student-roll-digits").value = "";
     } catch (error) {
-        statusMsg.innerText = "❌ Network Error: Transaction submission failed link arrays.";
+        statusMsg.innerText = "❌ Network Error: Transaction failed.";
         statusMsg.className = "text-sm font-semibold text-red-600 block";
     } finally {
         submitBtn.disabled = false;
-        submitBtn.innerText = "Mark Me Present";
+        submitBtn.innerText = "Mark Present";
     }
 }
