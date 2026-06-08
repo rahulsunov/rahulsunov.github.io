@@ -1,6 +1,5 @@
 // Configuration Parameters
 const BACKEND_API_URL = "https://script.google.com/macros/s/AKfycbxbbjm71ptrLSTkzGcBDUga4QoQxEqK22klsPyk6mEZ_-_awaxlhRvxF69J6BWSIxOH/exec";
-
 // Term 4 Phase Schedule Database (Section B) - Code Only
 const PRE_MID_SCHEDULE = [
     { section: "B", day: "Monday", timeSlot: "10:15 AM - 11:45 AM", subjectCode: "EL-2" },
