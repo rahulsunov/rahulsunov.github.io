@@ -34,18 +34,17 @@ const POST_MID_SCHEDULE = [
     { section: "B", day: "Friday", timeSlot: "04:00 PM - 05:30 PM", subjectCode: "BECG" }
 ];
 
-let extraClassMode = false;
-
 window.onload = function () {
-    const today = new Date();
-    document.getElementById('attendance-date').valueAsDate = today;
-    document.getElementById('extra-class-date').valueAsDate = today;
+    document.getElementById('attendance-date').valueAsDate = new Date();
     
     document.getElementById('attendance-date').addEventListener('change', () => {
         renderPublicTimetable();
         updateAttendanceSubjectDropdown();
     });
     document.getElementById('section-view-select').addEventListener('change', renderPublicTimetable);
+    
+    // Listen for choices on the unified dropdown menu module
+    document.getElementById('subject-select').addEventListener('change', checkDropdownSelectionState);
 
     renderPublicTimetable();
     updateAttendanceSubjectDropdown();
@@ -153,52 +152,43 @@ function updateAttendanceSubjectDropdown() {
     
     const dayClasses = scheduleStatus.data.filter(item => item.day.toLowerCase() === selectedDay.toLowerCase());
 
-    if(dayClasses.length === 0) {
+    // Populate normal matching slots
+    dayClasses.forEach(item => {
         let opt = document.createElement("option");
-        opt.text = `-- No standard sessions scheduled for ${selectedDay} --`;
-        opt.value = "";
+        opt.value = `Sec ${item.section} - ${item.subjectCode}`;
+        opt.text = `[${item.timeSlot}] ${item.subjectCode}`;
         select.appendChild(opt);
-    } else {
-        dayClasses.forEach(item => {
-            let opt = document.createElement("option");
-            opt.value = `Sec ${item.section} - ${item.subjectCode}`;
-            opt.text = `[${item.timeSlot}] ${item.subjectCode}`;
-            select.appendChild(opt);
-        });
+    });
+
+    // Add empty space separator if there are standard classes on the schedule
+    if (dayClasses.length > 0) {
+        let separator = document.createElement("option");
+        separator.text = "──────────────────────────";
+        separator.disabled = true;
+        select.appendChild(separator);
     }
+
+    // Always append the dedicated Extra Class option right inside the dropdown menu
+    let extraOpt = document.createElement("option");
+    extraOpt.value = "CHOSEN_EXTRA_CLASS_TRIGGER";
+    extraOpt.text = "➕ Log An Extra Class...";
+    select.appendChild(extraOpt);
+    
+    // Fire checking sweep to hide or reveal modules safely
+    checkDropdownSelectionState();
 }
 
-function toggleExtraClassMode() {
-    extraClassMode = !extraClassMode;
-    const standardWrapper = document.getElementById("standard-subject-wrapper");
+function checkDropdownSelectionState() {
+    const selection = document.getElementById("subject-select").value;
     const extraWrapper = document.getElementById("extra-class-form-wrapper");
-    const toggleBtn = document.getElementById("extra-class-btn");
-    const title = document.getElementById("session-panel-title");
 
-    if (extraClassMode) {
-        standardWrapper.classList.add("hidden");
+    if (selection === "CHOSEN_EXTRA_CLASS_TRIGGER") {
         extraWrapper.classList.remove("hidden");
-        toggleBtn.innerText = "Standard View";
-        title.innerText = "2. Extra Class Logging";
     } else {
-        standardWrapper.classList.remove("hidden");
         extraWrapper.classList.add("hidden");
-        toggleBtn.innerText = "Add Extra Class";
-        title.innerText = "1. Standard Session Logging";
     }
 }
 
-function formatTimeToAMPM(timeString) {
-    if (!timeString) return "";
-    let [hours, minutes] = timeString.split(':');
-    hours = parseInt(hours);
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    return `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
-}
-
-// NEW LOGIC ENGINE: Polls the spreadsheet backend to compile student historical summaries
 async function fetchAttendanceHistory() {
     const rollDigitsInput = document.getElementById("student-roll-digits").value.trim();
     const reportCard = document.getElementById("history-report-card");
@@ -247,7 +237,7 @@ async function fetchAttendanceHistory() {
     } catch (error) {
         alert("Failed to communicate with spreadsheet log rows.");
         console.error(error);
-    } finally {
+    } fileys: {
         historyBtn.disabled = false;
         historyBtn.innerText = "View My History";
     }
@@ -266,22 +256,18 @@ async function submitSelfAttendance() {
     }
 
     const fullRollNumber = `25PGHR${rollDigitsInput}`;
-    let dateInput, selectedSubject;
+    const dateInput = document.getElementById("attendance-date").value;
+    const dropdownSelection = document.getElementById("subject-select").value;
+    let selectedSubject = "";
 
-    if (extraClassMode) {
-        dateInput = document.getElementById("extra-class-date").value;
-        const customSubject = document.getElementById("subject-custom-input").value.trim().toUpperCase();
-        const timeFrom = formatTimeToAMPM(document.getElementById("extra-time-from").value);
-        const timeTo = formatTimeToAMPM(document.getElementById("extra-time-to").value);
-
-        if (!dateInput || !customSubject || !timeFrom || !timeTo) {
-            alert("Please complete all fields for the extra class configuration.");
-            return;
-        }
-        selectedSubject = `EXTRA: [${timeFrom} - ${timeTo}] ${customSubject}`;
+    // Route packet evaluation based on selection configuration paths
+    if (dropdownSelection === "CHOSEN_EXTRA_CLASS_TRIGGER") {
+        const extraSubject = document.getElementById("extra-subject-dropdown").value;
+        const extraSlotTime = document.getElementById("extra-time-slot-dropdown").value;
+        
+        selectedSubject = `EXTRA: [${extraSlotTime}] ${extraSubject}`;
     } else {
-        dateInput = document.getElementById("attendance-date").value;
-        selectedSubject = document.getElementById("subject-select").value;
+        selectedSubject = dropdownSelection;
 
         if (!selectedSubject || selectedSubject.trim() === "" || selectedSubject.startsWith("--")) {
             alert("Please select an active scheduled course session slot before signing.");
@@ -310,6 +296,10 @@ async function submitSelfAttendance() {
         statusMsg.innerText = `✅ Success: Presence verified for ${fullRollNumber}!`;
         statusMsg.className = "text-sm font-bold text-emerald-600 block";
         document.getElementById("student-roll-digits").value = "";
+        
+        // Reset sub menus view modules dynamically
+        document.getElementById("subject-select").selectedIndex = 0;
+        checkDropdownSelectionState();
     } catch (error) {
         statusMsg.innerText = "❌ Network Error: Transaction failed.";
         statusMsg.className = "text-sm font-semibold text-red-600 block";
