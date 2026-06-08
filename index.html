@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MDI Attendance & Schedule Portal (Self-Service)</title>
+    <title>MDI Attendance & Schedule Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 min-h-screen font-sans">
@@ -85,12 +85,12 @@
                 </div>
             </div>
 
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden p-8 flex flex-col items-center justify-center min-h-[60vh]">
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 flex flex-col items-center justify-center min-h-[40vh]">
                     <div class="max-w-md w-full text-center space-y-6">
                         <div>
-                            <h3 class="text-2xl font-black text-gray-900 tracking-tight">2. Student Self-Verification</h3>
-                            <p class="text-sm text-gray-500 mt-1">Enter your 3-digit roll extension code to verify presence logs.</p>
+                            <h3 class="text-2xl font-black text-gray-900 tracking-tight">2. Student Verification Terminal</h3>
+                            <p class="text-sm text-gray-500 mt-1">Type your 3-digit extension roll ID below.</p>
                         </div>
 
                         <div class="flex items-center justify-center space-x-1 bg-gray-100 p-4 rounded-2xl border border-gray-200 max-w-xs mx-auto">
@@ -100,10 +100,24 @@
 
                         <p id="submission-status-msg" class="text-sm font-semibold hidden"></p>
 
-                        <button onclick="submitSelfAttendance()" id="self-submit-btn" class="w-full max-w-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl shadow-lg tracking-wide transition transform active:scale-[0.98] text-lg">
-                            Mark Me Present
-                        </button>
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-xs mx-auto">
+                            <button onclick="submitSelfAttendance()" id="self-submit-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow transition tracking-wide text-md">
+                                Mark Present
+                            </button>
+                            <button onclick="fetchAttendanceHistory()" id="history-btn" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl transition text-md">
+                                View My History
+                            </button>
+                        </div>
                     </div>
+                </div>
+
+                <div id="history-report-card" class="hidden bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200 bg-slate-50 flex justify-between items-center">
+                        <h4 class="font-bold text-gray-900">Attendance Report Summary: <span id="report-roll-id" class="text-indigo-600"></span></h4>
+                        <button onclick="document.getElementById('history-report-card').classList.add('hidden')" class="text-xs text-gray-400 hover:text-gray-600 font-bold">Clear View</button>
+                    </div>
+                    <div id="history-report-list" class="divide-y divide-gray-100 text-sm max-h-[40vh] overflow-y-auto">
+                        </div>
                 </div>
             </div>
 
