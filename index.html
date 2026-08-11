@@ -263,5 +263,33 @@
     </footer>
 
     <script src="script.js"></script>
+    <!-- PlanBuddy AI Agent Widget -->
+    <button class="chat-toggle-btn" id="chatToggleBtn">
+        <i class="fa-solid fa-robot"></i>
+    </button>
+
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <div class="chat-avatar"><i class="fa-solid fa-robot"></i></div>
+                <div>
+                    <h4>PlanBuddy</h4>
+                    <p>BrightCart Tier-1 Support</p>
+                </div>
+            </div>
+            <button class="close-chat" id="closeChatBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                Hi! I'm PlanBuddy. I can help you track orders, process standard refunds, or connect you with a human specialist. How can I help today?
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off">
+            <button id="sendMessageBtn"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
 </body>
 </html>
