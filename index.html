@@ -3,132 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MDI Attendance & Schedule Portal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>BrightCart | Everyday Delivered</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-50 min-h-screen font-sans">
+<body>
 
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <span class="bg-indigo-600 text-white font-black px-3 py-1 rounded-lg text-xl tracking-wider">MDI</span>
-                <h2 class="text-xl font-bold text-gray-800">Attendance Engine</h2>
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        ⚡ Festive Season Sale is LIVE! Up to 60% OFF on Top Categories. <a href="#deals">Shop Now &rarr;</a>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="#" class="brand-logo">
+                <span class="logo-icon"><i class="fa-solid fa-bolt"></i></span>
+                Bright<span>Cart</span>
+            </a>
+
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" placeholder="Search 50,000+ products, brands, and categories...">
+                <button class="search-btn">Search</button>
             </div>
-            <div class="flex items-center">
-                <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span> Terminal Mode Active
-                </span>
+
+            <div class="nav-actions">
+                <a href="#orders" class="nav-item">
+                    <i class="fa-solid fa-box-archive"></i>
+                    <span>Orders</span>
+                </a>
+                <a href="#account" class="nav-item">
+                    <i class="fa-regular fa-user"></i>
+                    <span>Account</span>
+                </a>
+                <div class="cart-wrapper" id="cartBtn">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <div class="space-y-6">
-                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-                    <h3 class="text-lg font-bold text-gray-900 border-b pb-2">Schedule Lookup</h3>
-                    
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Select Search Date</label>
-                        <input type="date" id="attendance-date" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Select Group Section</label>
-                        <select id="section-view-select" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="B">Section B</option>
-                            <option value="A">Section A</option>
-                        </select>
-                    </div>
-
-                    <div class="pt-4 border-t border-gray-100">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Timetable Results</label>
-                        <div id="public-timetable-display" class="space-y-2 text-sm max-h-[22vh] overflow-y-auto">
-                            <p class="text-gray-400 italic text-center">Syncing schedule parameters...</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="attendance-config-panel" class="bg-slate-900 text-white p-6 rounded-xl border border-slate-800 shadow-sm space-y-4">
-                    <div class="border-b border-slate-800 pb-2">
-                        <h3 id="session-panel-title" class="text-md font-bold text-slate-300">1. Select Target Session</h3>
-                    </div>
-                    
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Active Class Slot</label>
-                            <select id="subject-select" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
-                        </div>
-
-                        <div id="extra-class-form-wrapper" class="hidden space-y-3 border-l-2 border-indigo-500 id-modifier pl-3 pt-1">
-                            <div>
-                                <label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Select Extra Subject</label>
-                                <select id="extra-subject-dropdown" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <option value="EL-2">EL-2</option>
-                                    <option value="BECG">BECG</option>
-                                    <option value="SM-2">SM-2</option>
-                                    <option value="OM">OM</option>
-                                    <option value="R&S">R&S</option>
-                                    <option value="STCM">STCM</option>
-                                    <option value="J2S">J2S</option>
-                                    <option value="SCCSR">SCCSR</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Select Extra Slot Time</label>
-                                <select id="extra-time-slot-dropdown" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <option value="08:30 AM - 10:00 AM">08:30 AM - 10:00 AM</option>
-                                    <option value="10:15 AM - 11:45 AM">10:15 AM - 11:45 AM</option>
-                                    <option value="12:00 PM - 01:30 PM">12:00 PM - 01:30 PM</option>
-                                    <option value="02:15 PM - 03:45 PM">02:15 PM - 03:45 PM</option>
-                                    <option value="04:00 PM - 05:30 PM">04:00 PM - 05:30 PM</option>
-                                    <option value="05:45 PM - 07:15 PM">05:45 PM - 07:15 PM</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 flex flex-col items-center justify-center min-h-[40vh]">
-                    <div class="max-w-md w-full text-center space-y-6">
-                        <div>
-                            <h3 class="text-2xl font-black text-gray-900 tracking-tight">2. Student Verification Terminal</h3>
-                            <p class="text-sm text-gray-500 mt-1">Type your 3-digit extension roll ID below.</p>
-                        </div>
-
-                        <div class="flex items-center justify-center space-x-1 bg-gray-100 p-4 rounded-2xl border border-gray-200 max-w-xs mx-auto">
-                            <span class="text-2xl font-black text-gray-400 tracking-tight select-none">25PGHR</span>
-                            <input type="text" id="student-roll-digits" maxlength="3" placeholder="064" class="w-24 bg-transparent text-2xl font-black text-indigo-600 focus:outline-none tracking-widest text-center placeholder-gray-300">
-                        </div>
-
-                        <p id="submission-status-msg" class="text-sm font-semibold hidden"></p>
-
-                        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-xs mx-auto">
-                            <button onclick="submitSelfAttendance()" id="self-submit-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow transition tracking-wide text-md">
-                                Mark Present
-                            </button>
-                            <button onclick="fetchAttendanceHistory()" id="history-btn" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl transition text-md">
-                                View My History
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="history-report-card" class="hidden bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-200 bg-slate-50 flex justify-between items-center">
-                        <h4 class="font-bold text-gray-900">Attendance Report Summary: <span id="report-roll-id" class="text-indigo-600"></span></h4>
-                        <button onclick="document.getElementById('history-report-card').classList.add('hidden')" class="text-xs text-gray-400 hover:text-gray-600 font-bold">Clear View</button>
-                    </div>
-                    <div id="history-report-list" class="divide-y divide-gray-100 text-sm max-h-[40vh] overflow-y-auto">
-                        </div>
-                </div>
-            </div>
-
+    <!-- Sub-navigation -->
+    <nav class="sub-nav">
+        <div class="sub-nav-container">
+            <a href="#all"><i class="fa-solid fa-bars"></i> All Categories</a>
+            <a href="#festive">Festive Specials</a>
+            <a href="#electronics">Electronics & Tech</a>
+            <a href="#fashion">Fashion & Apparel</a>
+            <a href="#home">Home & Kitchen</a>
+            <a href="#essentials">Daily Essentials</a>
+            <a href="#support" class="support-link"><i class="fa-regular fa-comments"></i> Customer Support</a>
         </div>
-    </main>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-container">
+            <div class="hero-content">
+                <span class="badge">Festive Grand Sale</span>
+                <h1>Celebrate Joy with Lightning Fast Delivery</h1>
+                <p>Discover thousands of premium products with guaranteed next-day delivery across Bengaluru, Mumbai, Delhi NCR & Hyderabad.</p>
+                <div class="hero-btns">
+                    <a href="#deals" class="btn btn-primary">Explore Deals</a>
+                    <a href="#categories" class="btn btn-secondary">Browse Categories</a>
+                </div>
+            </div>
+            <div class="hero-card">
+                <div class="glass-card">
+                    <i class="fa-solid fa-truck-fast hero-card-icon"></i>
+                    <h3>Peak Express Fulfillment</h3>
+                    <p>Live tracking and 100% verified dispatch quality.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Categories -->
+    <section class="section categories-section" id="categories">
+        <div class="container">
+            <div class="section-header">
+                <h2>Top Sale Categories</h2>
+                <a href="#" class="view-all">View All <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="category-grid">
+                <div class="category-card">
+                    <div class="category-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                    <h3>Smartphones & Tech</h3>
+                    <p>Up to 40% Off</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fa-solid fa-shirt"></i></div>
+                    <h3>Festive Fashion</h3>
+                    <p>Flat 50% Off</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fa-solid fa-couch"></i></div>
+                    <h3>Home & Living</h3>
+                    <p>Up to 60% Off</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fa-solid fa-basket-shopping"></i></div>
+                    <h3>Daily Essentials</h3>
+                    <p>Min 20% Off</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trending Products Grid -->
+    <section class="section products-section" id="deals">
+        <div class="container">
+            <div class="section-header">
+                <h2>Trending Festive Deals</h2>
+                <div class="filter-tabs">
+                    <button class="tab-btn active">All</button>
+                    <button class="tab-btn">Electronics</button>
+                    <button class="tab-btn">Fashion</button>
+                    <button class="tab-btn">Home</button>
+                </div>
+            </div>
+            <div class="product-grid">
+                <!-- Product Card 1 -->
+                <div class="product-card">
+                    <div class="product-badge">Best Seller</div>
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80" alt="Wireless Headphones">
+                    </div>
+                    <div class="product-details">
+                        <span class="category-tag">Electronics</span>
+                        <h3 class="product-title">Noise-Canceling Wireless Headphones</h3>
+                        <div class="rating">
+                            <i class="fa-solid fa-star"></i> 4.8 <span>(1,240 reviews)</span>
+                        </div>
+                        <div class="product-footer">
+                            <div class="price">₹4,999 <span class="old-price">₹8,999</span></div>
+                            <button class="add-to-cart-btn" onclick="addToCart('Noise-Canceling Wireless Headphones')">
+                                <i class="fa-solid fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="product-card">
+                    <div class="product-badge accent">Hot Deal</div>
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80" alt="Smartwatch">
+                    </div>
+                    <div class="product-details">
+                        <span class="category-tag">Wearables</span>
+                        <h3 class="product-title">Pro Fitness Smartwatch Series 5</h3>
+                        <div class="rating">
+                            <i class="fa-solid fa-star"></i> 4.7 <span>(850 reviews)</span>
+                        </div>
+                        <div class="product-footer">
+                            <div class="price">₹2,499 <span class="old-price">₹5,999</span></div>
+                            <button class="add-to-cart-btn" onclick="addToCart('Pro Fitness Smartwatch Series 5')">
+                                <i class="fa-solid fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500&q=80" alt="Studio Headphones">
+                    </div>
+                    <div class="product-details">
+                        <span class="category-tag">Audio</span>
+                        <h3 class="product-title">Studio Monitor Wired Headphones</h3>
+                        <div class="rating">
+                            <i class="fa-solid fa-star"></i> 4.9 <span>(410 reviews)</span>
+                        </div>
+                        <div class="product-footer">
+                            <div class="price">₹3,199 <span class="old-price">₹4,499</span></div>
+                            <button class="add-to-cart-btn" onclick="addToCart('Studio Monitor Wired Headphones')">
+                                <i class="fa-solid fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 4 -->
+                <div class="product-card">
+                    <div class="product-badge">New Launch</div>
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80" alt="Running Shoes">
+                    </div>
+                    <div class="product-details">
+                        <span class="category-tag">Footwear</span>
+                        <h3 class="product-title">UltraGlide Performance Running Shoes</h3>
+                        <div class="rating">
+                            <i class="fa-solid fa-star"></i> 4.6 <span>(320 reviews)</span>
+                        </div>
+                        <div class="product-footer">
+                            <div class="price">₹1,899 <span class="old-price">₹3,299</span></div>
+                            <button class="add-to-cart-btn" onclick="addToCart('UltraGlide Performance Running Shoes')">
+                                <i class="fa-solid fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">Item added to your cart!</div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <div class="brand-logo footer-logo">
+                    <span class="logo-icon"><i class="fa-solid fa-bolt"></i></span>
+                    Bright<span>Cart</span>
+                </div>
+                <p>BrightCart is India's premier e-commerce platform delivering quality products directly to your doorstep with unmatched speed.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Returns & Refunds</a></li>
+                    <li><a href="#">Shipping Policies</a></li>
+                    <li><a href="#">Help Center</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>About BrightCart</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Store Partners</a></li>
+                    <li><a href="#">Sustainability</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Connect With Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 BrightCart Technologies Pvt. Ltd. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
